@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from subscriptions.forms import SubscriptionForm
+from subscriptions.models import Subscription
 from django.template.loader import render_to_string
 
 def subscribe(request):
@@ -22,6 +23,8 @@ def create(request):
     _send_mail('Confirmação de inscrição', settings.DEFAULT_FROM_EMAIL,
                 form.cleaned_data['email'], 'subscriptions/subscription_email.txt',
                 form.cleaned_data)
+
+    Subscription.objects.create(**form.cleaned_data)
     #success feedback
     messages.success(request, 'Inscrição realizada com sucesso!')
     return redirect('/inscricao/')
